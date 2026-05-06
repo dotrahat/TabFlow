@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TabFlow</title>
+  <link rel="stylesheet" href="panel.css" />
+</head>
+<body>
+  <div class="panel">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="3" width="9" height="6" rx="1.5" fill="currentColor" opacity="0.9"/>
+          <rect x="13" y="3" width="9" height="6" rx="1.5" fill="currentColor" opacity="0.6"/>
+          <rect x="2" y="11" width="9" height="6" rx="1.5" fill="currentColor" opacity="0.6"/>
+          <rect x="13" y="11" width="9" height="6" rx="1.5" fill="currentColor" opacity="0.9"/>
+          <rect x="2" y="19" width="20" height="2.5" rx="1.25" fill="currentColor" opacity="0.3"/>
+        </svg>
+        <span class="logo-text">TabFlow</span>
+      </div>
+      <div class="tab-count" id="tabCount">— tabs</div>
+    </header>
+
+    <!-- Nav tabs -->
+    <nav class="nav">
+      <button class="nav-btn active" data-section="actions">Actions</button>
+      <button class="nav-btn" data-section="tabs">All Tabs</button>
+    </nav>
+
+    <!-- ACTIONS SECTION -->
+    <section class="section" id="section-actions">
+
+      <div class="group-block">
+        <div class="group-label">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Tab Actions
+        </div>
+
+        <button class="action-btn" id="btn-group">
+          <span class="btn-icon">⬡</span>
+          <span class="btn-text">
+            <strong>Group by Domain</strong>
+            <small>Organize tabs into colored groups</small>
+          </span>
+          <span class="btn-arrow">›</span>
+        </button>
+
+        <button class="action-btn" id="btn-close-dupes">
+          <span class="btn-icon">⊗</span>
+          <span class="btn-text">
+            <strong>Close Duplicates</strong>
+            <small>Keep one tab per URL</small>
+          </span>
+          <span class="btn-arrow">›</span>
+        </button>
+
+        <button class="action-btn" id="btn-sort-domain">
+          <span class="btn-icon">⇅</span>
+          <span class="btn-text">
+            <strong>Sort by Domain</strong>
+            <small>Alphabetical domain order</small>
+          </span>
+          <span class="btn-arrow">›</span>
+        </button>
+
+        <button class="action-btn" id="btn-sort-title">
+          <span class="btn-icon">Aa</span>
+          <span class="btn-text">
+            <strong>Sort by Title</strong>
+            <small>Alphabetical title order</small>
+          </span>
+          <span class="btn-arrow">›</span>
+        </button>
+      </div>
+
+      <div class="group-block">
+        <div class="group-label">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 3h4v4H3zM9 3h4v4H9zM3 9h4v4H3zM9 9h4v4H9z" stroke="currentColor" stroke-width="1.2"/></svg>
+          Tab Group Actions
+        </div>
+
+        <button class="action-btn" id="btn-expand">
+          <span class="btn-icon">⊞</span>
+          <span class="btn-text">
+            <strong>Expand All Groups</strong>
+            <small>Show all tabs in all groups</small>
+          </span>
+          <span class="btn-arrow">›</span>
+        </button>
+
+        <button class="action-btn" id="btn-collapse">
+          <span class="btn-icon">⊟</span>
+          <span class="btn-text">
+            <strong>Collapse All Groups</strong>
+            <small>Minimize all tab groups</small>
+          </span>
+          <span class="btn-arrow">›</span>
+        </button>
+
+        <button class="action-btn" id="btn-ungroup">
+          <span class="btn-icon">⊡</span>
+          <span class="btn-text">
+            <strong>Ungroup All</strong>
+            <small>Remove all groupings</small>
+          </span>
+          <span class="btn-arrow">›</span>
+        </button>
+      </div>
+
+      <div class="group-block">
+        <div class="group-label">
+          <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 6h6M5 9h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Window Actions
+        </div>
+
+        <button class="action-btn" id="btn-merge">
+          <span class="btn-icon">⊕</span>
+          <span class="btn-text">
+            <strong>Merge All Windows</strong>
+            <small>Combine all windows into one</small>
+          </span>
+          <span class="btn-arrow">›</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ALL TABS SECTION -->
+    <section class="section hidden" id="section-tabs">
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 16 16" fill="none">
+          <circle cx="6.5" cy="6.5" r="4" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M10 10l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <input class="search-input" id="tabSearch" type="text" placeholder="Search tabs…" />
+      </div>
+      <div class="tab-list" id="tabList">
+        <div class="loading-msg">Loading tabs…</div>
+      </div>
+    </section>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+  </div>
+  <script src="panel.js"></script>
+</body>
+</html>

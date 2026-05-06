@@ -469,7 +469,111 @@ body {
   flex-shrink: 0;
 }
 
-/* ── Fade in ── */
+/* ── Settings ── */
+.setting-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+
+.setting-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.setting-info {
+  flex: 1;
+}
+
+.setting-title {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.setting-desc {
+  font-size: 11px;
+  color: var(--text-3);
+  line-height: 1.5;
+}
+
+/* Toggle switch */
+.toggle {
+  flex-shrink: 0;
+  cursor: pointer;
+  margin-top: 1px;
+}
+
+.toggle input {
+  display: none;
+}
+
+.toggle-track {
+  display: block;
+  width: 36px;
+  height: 20px;
+  background: var(--surface-3);
+  border-radius: 10px;
+  position: relative;
+  transition: background var(--transition);
+  border: 1px solid var(--border);
+}
+
+.toggle-thumb {
+  display: block;
+  width: 14px;
+  height: 14px;
+  background: var(--text-3);
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform var(--transition), background var(--transition);
+}
+
+.toggle input:checked + .toggle-track {
+  background: var(--accent-dim);
+  border-color: rgba(74, 222, 128, 0.35);
+}
+
+.toggle input:checked + .toggle-track .toggle-thumb {
+  background: var(--accent);
+  transform: translateX(16px);
+}
+
+/* About card */
+.about-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.about-logo {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.about-meta {
+  font-size: 11px;
+  color: var(--text-3);
+  line-height: 1.5;
+}
+
+/* Active indicator dot for automation */
+.setting-card.active-setting {
+  border-color: rgba(74, 222, 128, 0.25);
+}
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }

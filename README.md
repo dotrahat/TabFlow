@@ -1,8 +1,6 @@
-# TabFlow — Tab Manager (No Analytics, No Tracking, No Ads - Just Functionality)
+# TabFlow — Tab Manager
 
 A lightweight Chrome extension that brings order to your browser. Opens as a **side panel** so it stays visible while you work.
-
-![TabFlow](TabFlow.png)
 
 ## Features
 
@@ -54,6 +52,16 @@ Click the **TabFlow icon** in the Chrome toolbar to open the side panel. The pan
 | `windows` | Query and merge browser windows |
 | `sidePanel` | Render the UI as a side panel instead of a popup |
 | `storage` | Reserved for future settings persistence |
+
+
+## Changelog
+
+### v1.2.0
+- Added **Auto-join Existing Groups** — new tabs are automatically moved into an existing group if their domain already has one
+- Added **Auto-group New Domains** — when 2+ ungrouped tabs from the same site are open, a group is created for them automatically
+- Added **Settings panel** with toggles to enable/disable each automation independently
+- Automation runs in the background even when the side panel is closed
+- Settings persist across browser restarts
 
 ## License
 

@@ -201,6 +201,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     document.getElementById(`section-${sec}`).classList.remove('hidden');
 
     if (sec === 'tabs') renderTabList();
+    if (sec === 'settings') initSettings();
   });
 });
 
@@ -619,9 +620,142 @@ document.getElementById('btn-collapse').addEventListener('click', collapseAllGro
 document.getElementById('btn-ungroup').addEventListener('click', ungroupAll);
 document.getElementById('btn-merge').addEventListener('click', mergeAllWindows);
 
+// ─────────────────────────────────────────────────────────────────
+// SETTINGS — persist toggles via chrome.storage.local
+// ─────────────────────────────────────────────────────────────────
+const DEFAULTS = { autoJoin: false, autoGroup: false };
+
+async function getSettings() {
+  return new Promise(resolve => {
+    chrome.storage.local.get(DEFAULTS, resolve);
+  });
+}
+
+async function saveSetting(key, value) {
+  return new Promise(resolve => chrome.storage.local.set({ [key]: value }, resolve));
+}
+
+async function initSettings() {
+  const settings = await getSettings();
+
+  const chkJoin  = document.getElementById('chk-autojoin');
+  const chkGroup = document.getElementById('chk-autogroup');
+
+  chkJoin.checked  = settings.autoJoin;
+  chkGroup.checked = settings.autoGroup;
+
+  updateSettingCardStyle('chk-autojoin',  settings.autoJoin);
+  updateSettingCardStyle('chk-autogroup', settings.autoGroup);
+
+  chkJoin.addEventListener('change', async () => {
+    await saveSetting('autoJoin', chkJoin.checked);
+    updateSettingCardStyle('chk-autojoin', chkJoin.checked);
+    showToast(chkJoin.checked ? '✓ Auto-join enabled' : 'Auto-join disabled', 'success');
+  });
+
+  chkGroup.addEventListener('change', async () => {
+    await saveSetting('autoGroup', chkGroup.checked);
+    updateSettingCardStyle('chk-autogroup', chkGroup.checked);
+    showToast(chkGroup.checked ? '✓ Auto-group enabled' : 'Auto-group disabled', 'success');
+  });
+}
+
+function updateSettingCardStyle(checkboxId, active) {
+  const card = document.getElementById(checkboxId)?.closest('.setting-card');
+  if (!card) return;
+  card.classList.toggle('active-setting', active);
+}
+
+// ─────────────────────────────────────────────────────────────────
+// AUTOMATION — handle new tabs
+// ─────────────────────────────────────────────────────────────────
+
+// Debounce map to avoid double-firing on rapid tab creation
+const pendingAutomate = new Set();
+
+async function handleNewTab(tab) {
+  if (!tab.id || pendingAutomate.has(tab.id)) return;
+  // Wait for tab URL to be available (onCreated fires before URL is set)
+  // We'll handle it in onUpdated when status = 'complete' or URL changes
+}
+
+async function automateTab(tab) {
+  if (!tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://')) return;
+  if (tab.groupId !== chrome.tabGroups.TAB_GROUP_ID_NONE) return; // already in a group
+
+  const settings = await getSettings();
+  if (!settings.autoJoin && !settings.autoGroup) return;
+
+  let hostname;
+  try { hostname = new URL(tab.url).hostname.replace(/^www\./, ''); } catch { return; }
+  const apex = getApexDomain(hostname);
+
+  // Get all tabs in current window
+  const allTabs = await chrome.tabs.query({ windowId: tab.windowId });
+
+  // ── Feature 1: Auto-join existing group ──────────────────────
+  if (settings.autoJoin) {
+    const groups = await chrome.tabGroups.query({ windowId: tab.windowId });
+    const groupName = getGroupName(tab.url);
+
+    // Find a group whose title matches this tab's domain name
+    const matchingGroup = groups.find(g => g.title === groupName);
+    if (matchingGroup) {
+      try {
+        await chrome.tabs.group({ tabIds: [tab.id], groupId: matchingGroup.id });
+        return; // joined, no need for auto-group check
+      } catch (e) {
+        console.warn('Auto-join failed:', e);
+      }
+    }
+  }
+
+  // ── Feature 2: Auto-group new domain when 2+ tabs match ──────
+  if (settings.autoGroup) {
+    // Find other ungrouped tabs from the same apex domain
+    const siblings = allTabs.filter(t =>
+      t.id !== tab.id &&
+      t.groupId === chrome.tabGroups.TAB_GROUP_ID_NONE &&
+      t.url && !t.url.startsWith('chrome://') && !t.url.startsWith('chrome-extension://')
+    ).filter(t => {
+      try {
+        const h = new URL(t.url).hostname.replace(/^www\./, '');
+        return getApexDomain(h) === apex;
+      } catch { return false; }
+    });
+
+    if (siblings.length >= 1) {
+      // 2+ tabs from same domain (this tab + at least 1 sibling)
+      const tabIds = [tab.id, ...siblings.map(t => t.id)];
+      const groupName = getGroupName(tab.url);
+      const color = DOMAIN_COLORS[Math.abs(apex.split('').reduce((a, c) => a + c.charCodeAt(0), 0)) % DOMAIN_COLORS.length];
+
+      try {
+        const groupId = await chrome.tabs.group({ tabIds });
+        await chrome.tabGroups.update(groupId, {
+          title: groupName,
+          color: color.chrome,
+          collapsed: false,
+        });
+      } catch (e) {
+        console.warn('Auto-group failed:', e);
+      }
+    }
+  }
+}
+
 // ── Init ──────────────────────────────────────────────────────────
 refreshTabCount();
 
 // Update count when tabs change
 chrome.tabs.onCreated.addListener(refreshTabCount);
 chrome.tabs.onRemoved.addListener(refreshTabCount);
+
+// Automation: fire when a tab finishes loading (URL is stable)
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  // Only act when URL is first set (status=loading) to respond quickly,
+  // but skip internal/empty pages
+  if (changeInfo.url && tab.url && !tab.url.startsWith('chrome')) {
+    automateTab(tab);
+  }
+});

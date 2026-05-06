@@ -1,4 +1,4 @@
-# TabFlow — Tab Manager
+# TabFlow — Tab Manager (No Analytics, No Tracking, No Ads - Just Functionality)
 
 A lightweight Chrome extension that brings order to your browser. Opens as a **side panel** so it stays visible while you work.
 

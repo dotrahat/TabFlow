@@ -2,6 +2,8 @@
 
 A lightweight Chrome extension that brings order to your browser. Opens as a **side panel** so it stays visible while you work.
 
+![TabFlow](TabFlow.png)
+
 ## Features
 
 - **Group by Domain** — Automatically groups tabs by website into labeled, color-coded Chrome tab groups. Subdomains are merged intelligently (e.g. `docs.nvidia.com` and `nvidia.com` go into the same *Nvidia* group).

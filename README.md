@@ -58,6 +58,9 @@ Click the **TabFlow icon** in the Chrome toolbar to open the side panel. The pan
 
 ## Changelog
 
+### v1.2.1
+- Fixed **Group by Domain** not skipping single-tab domains — groups are now only created when 2 or more tabs share the same domain
+
 ### v1.2.0
 - Added **Auto-join Existing Groups** — new tabs are automatically moved into an existing group if their domain already has one
 - Added **Auto-group New Domains** — when 2+ ungrouped tabs from the same site are open, a group is created for them automatically

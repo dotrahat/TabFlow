@@ -248,8 +248,9 @@ async function groupByDomain() {
     }
 
     colorIndex = 0;
+    let groupedCount = 0;
     for (const [apex, domainTabs] of domainMap.entries()) {
-      if (domainTabs.length < 1) continue;
+      if (domainTabs.length < 2) continue;
       const tabIds = domainTabs.map(t => t.id);
       const color = nextColor();
       const groupName = getGroupName(domainTabs[0].url);
@@ -261,13 +262,14 @@ async function groupByDomain() {
           color: color.chrome,
           collapsed: false,
         });
+        groupedCount++;
       } catch (e) {
         console.warn(`Could not group ${apex}:`, e);
       }
     }
 
     await refreshTabCount();
-    showToast(`✓ Grouped ${domainMap.size} domains`, 'success');
+    showToast(`✓ Grouped ${groupedCount} domains`, 'success');
   } catch (e) {
     showToast('Failed to group tabs', 'error');
     console.error(e);

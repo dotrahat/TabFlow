@@ -58,6 +58,9 @@ Click the **TabFlow icon** in the Chrome toolbar to open the side panel. The pan
 
 ## Changelog
 
+### v1.3.0
+- Added **Float Groups to Front** — moves all grouped tabs before ungrouped ones, preserving group and ungrouped tab order
+
 ### v1.2.1
 - Fixed **Group by Domain** not skipping single-tab domains — groups are now only created when 2 or more tabs share the same domain
 

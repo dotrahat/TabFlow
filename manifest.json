@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TabFlow — Tab Manager",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Group, merge, deduplicate and organize your tabs with a sleek side panel.",
   "permissions": [
     "tabs",

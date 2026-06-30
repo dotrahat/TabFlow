@@ -447,6 +447,36 @@ async function ungroupAll() {
 }
 
 // ─────────────────────────────────────────────────────────────────
+// ACTION: Float Groups to Front
+// ─────────────────────────────────────────────────────────────────
+async function floatGroupsToFront() {
+  const btn = document.getElementById('btn-float-groups');
+  setRunning(btn, true);
+
+  try {
+    const tabs = await chrome.tabs.query({ currentWindow: true });
+    const ungrouped = tabs.filter(t => t.groupId === chrome.tabGroups.TAB_GROUP_ID_NONE);
+
+    if (ungrouped.length === 0) {
+      showToast('No ungrouped tabs to move', 'success');
+      return;
+    }
+
+    // Move each ungrouped tab to the end, preserving their relative order
+    for (const tab of ungrouped) {
+      await chrome.tabs.move(tab.id, { index: -1 });
+    }
+
+    showToast(`✓ Groups moved to front`, 'success');
+  } catch (e) {
+    showToast('Failed to reorder tabs', 'error');
+    console.error(e);
+  } finally {
+    setRunning(btn, false);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
 // ACTION: Merge All Windows
 // ─────────────────────────────────────────────────────────────────
 async function mergeAllWindows() {
@@ -620,6 +650,7 @@ document.getElementById('btn-sort-title').addEventListener('click', sortByTitle)
 document.getElementById('btn-expand').addEventListener('click', expandAllGroups);
 document.getElementById('btn-collapse').addEventListener('click', collapseAllGroups);
 document.getElementById('btn-ungroup').addEventListener('click', ungroupAll);
+document.getElementById('btn-float-groups').addEventListener('click', floatGroupsToFront);
 document.getElementById('btn-merge').addEventListener('click', mergeAllWindows);
 
 // ─────────────────────────────────────────────────────────────────
